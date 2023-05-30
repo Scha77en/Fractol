@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 22:37:28 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/05/30 13:59:41 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/05/30 19:29:14 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_fractal
 	double	offset_x;
 	double	offset_y;
 	char	*fractal_name;
+	int		value;
 }	t_fractal;
 
 typedef struct s_complex
@@ -47,4 +48,17 @@ typedef struct s_complex
 	double	i;
 }	t_complex;
 
+int		handle_key_press(int keycode, t_fractal *fractal);
+int		handle_window_close(t_fractal *fractal);
+int		handle_arrow_keys(int keycode, t_fractal *fractal);
+int		handle_mouse_wheel(int button, int x, int y, t_fractal *fractal);
+int		handle_mouse_movement(int x, int y, t_fractal *fractal);
+int		mandelbrot_iter(t_complex c, t_complex z);
+int		julia_iter(t_complex z, t_complex c, t_fractal fractal);
+int		burning_ship(t_complex c, t_complex z);
+int		get_color(int n);
+int		ft_strcmp(char *s1, char *s2);
+void	draw_fractal(t_fractal *fractal);
+void	handle_errors(int argc, char **argv);
+void	proper_exit(int v);
 #endif

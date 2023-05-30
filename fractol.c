@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 22:33:53 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/05/30 16:20:11 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/05/30 19:31:31 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,102 +22,6 @@ int	get_color(int n)
 	green = sin(0.4 * n + 4) * 127 + 128;
 	blue = sin(0.3 * n + 4) * 127 + 128;
 	return ((red << 16) + (green << 8) + blue);
-}
-
-int	handle_key_press(int keycode, t_fractal *fractal)
-{
-	if (keycode == 53) // ESC key
-	{
-		mlx_destroy_image(fractal->mlx, fractal->img);
-		mlx_destroy_window(fractal->mlx, fractal->win);
-		exit(0);
-	}
-	return (0);
-}
-
-int	handle_window_close(t_fractal *fractal)
-{
-	mlx_destroy_image(fractal->mlx, fractal->img);
-	mlx_destroy_window(fractal->mlx, fractal->win);
-	exit(0);
-	return (0);
-}
-
-void	proper_exit(int v)
-{
-	if (v == 1)
-	{
-		write(2, "Usage: ./fractol <the fractal>\n", 32);
-		write(2, "available fractals:\n", 21);
-		write(2, "\tMandelbrot\n", 13);
-		write(2, "\tJulia\n", 8);
-		exit(1);
-	}
-}
-
-void	handle_errors(int argc, char **argv)
-{
-	if (argc != 2 || (strcmp(argv[1], "Mandelbrot")
-			&& strcmp(argv[1], "Julia")))
-		proper_exit(1);
-}
-
-int	mandelbrot_iter(t_complex c, t_complex z)
-{
-	int		n;
-	double	zr;
-	double	zi;
-
-	n = 0;
-	while (n < MAX_ITER)
-	{
-		zr = z.r * z.r - z.i * z.i + c.r;
-		zi = 2 * z.r * z.i - c.i;
-		z.r = zr;
-		z.i = zi;
-		if ((z.r * z.r + z.i * z.i) > 4.0)
-			break ;
-		n++;
-	}
-	return (n);
-}
-
-int	burning_ship(t_complex c, t_complex z)
-{
-	int 	n;
-	double	zr;
-	double	zi;
-
-	n = 0;
-	while (n < MAX_ITER)
-	{
-		zr = z.r * z.r - z.i * z.i + c.r;
-		zi = fabs(2 * z.r * z.i) - c.i;
-		z.r = zr;
-		z.i = zi;
-		if ((z.r * z.r + z.i * z.i) > 4.0)
-			break ;
-		n++;
-	}
-	return (n);
-}
-
-int julia_iter(t_complex z, t_complex c)
-{
-	int	n;
-
-	n = 0;
-	while (n < MAX_ITER)
-	{
-		double zr = z.r * z.r - z.i * z.i + 0;
-		double zi = 2 * z.r * z.i + 0;
-		z.r = zr;
-		z.i = zi;
-		if ((z.r * z.r + z.i * z.i) > 4.0)
-			break;
-		n++;
-	}
-	return n;
 }
 
 void	draw_fractal(t_fractal *fractal)
@@ -145,7 +49,7 @@ void	draw_fractal(t_fractal *fractal)
 			if (strcmp(fractal->fractal_name, "Mandelbrot") == 0)
 				iter = mandelbrot_iter(c, z);
 			else if (strcmp(fractal->fractal_name, "Julia") == 0)
-				iter = julia_iter(c, z);
+				iter = julia_iter(c, z, *fractal);
 			color = get_color(iter + COLOR_OFFSET);
 			fractal->data_addr[(x * fractal->bpp / 8) + (y * fractal->size_line)] = color & 0xFF;           // blue channel
 			fractal->data_addr[(x * fractal->bpp / 8) + (y * fractal->size_line) + 1] = (color >> 8) & 0xFF;  // green channel
@@ -154,46 +58,6 @@ void	draw_fractal(t_fractal *fractal)
 		}
 		y++;
 	}
-}
-
-int	handle_arrow_keys(int keycode, t_fractal *fractal)
-{
-	if (keycode == 123) // Left arrow key
-		fractal->offset_x -= 0.1 / fractal->zoom;
-	else if (keycode == 124) // Right arrow key
-		fractal->offset_x += 0.1 / fractal->zoom;
-	else if (keycode == 125) // Down arrow key
-		fractal->offset_y += 0.1 / fractal->zoom;
-	else if (keycode == 126) // Up arrow key
-		fractal->offset_y -= 0.1 / fractal->zoom;
-	draw_fractal(fractal);
-	mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
-	return (0);
-}
-
-int	handle_mouse_wheel(int button, int x, int y, t_fractal *fractal)
-{
-	if (button == 4) {
-		fractal->zoom *= ZOOM_FACTOR;
-		fractal->offset_x = (x - WIDTH / 2) / (0.5 * fractal->zoom * WIDTH) \
-		+ fractal->offset_x;
-		fractal->offset_y = (y - HEIGHT / 2) / (0.5 * fractal->zoom * HEIGHT) \
-		+ fractal->offset_y;
-		draw_fractal(fractal);
-		mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
-	}
-	else if (button == 5) {
-		fractal->zoom /= ZOOM_FACTOR;
-	fractal->offset_x = (x - WIDTH / 2) / (0.5 * fractal->zoom * WIDTH) \
-		+ fractal->offset_x;
-	fractal->offset_y = (y - HEIGHT / 2) / (0.5 * fractal->zoom * HEIGHT) \
-		+ fractal->offset_y;
-		draw_fractal(fractal);
-		mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
-	}
-	// draw_fractal(fractal);
-	// mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
-	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -213,30 +77,29 @@ int	main(int argc, char **argv)
 	draw_fractal(&fractal);
 	mlx_put_image_to_window(fractal.mlx, fractal.win, fractal.img, 0, 0);
 	mlx_hook(fractal.win, 17, 0, handle_window_close, &fractal);
-	// mlx_mouse_hook(fractal.win, handle_mouse_wheel, &fractal);
 	mlx_hook(fractal.win, 4, 0, handle_mouse_wheel, &fractal);
+	mlx_hook(fractal.win, 6, 0, handle_mouse_movement, &fractal);
 	mlx_hook(fractal.win, 3, 0, handle_key_press, &fractal);
 	mlx_hook(fractal.win, 2, 1L << 2, handle_arrow_keys, &fractal);
 	mlx_loop(fractal.mlx);
 	return (0);
 }
 
-// int	ft_strcmp(char *s1, char *s2)
-// {
-// 	size_t	i;
+int	ft_strcmp(char *s1, char *s2)
+{
+	int		i;
 
-// 	i = 0;
-// 	while (s1[i] || s2[i])
-// 	{
-// 		if (s1[i] != s2[i])
-// 			return (s1[i] - s2[i]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
+		i++;
+	}
+	return (0);
+}
 
 // more protections for windows and images and other functions that return NULL;
-//
 //
 // what to handle in the program ? :
 // - the arrows to move around; --DONE--
