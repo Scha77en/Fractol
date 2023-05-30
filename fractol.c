@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 22:33:53 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/05/28 19:07:44 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/05/30 16:20:11 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,18 +156,43 @@ void	draw_fractal(t_fractal *fractal)
 	}
 }
 
+int	handle_arrow_keys(int keycode, t_fractal *fractal)
+{
+	if (keycode == 123) // Left arrow key
+		fractal->offset_x -= 0.1 / fractal->zoom;
+	else if (keycode == 124) // Right arrow key
+		fractal->offset_x += 0.1 / fractal->zoom;
+	else if (keycode == 125) // Down arrow key
+		fractal->offset_y += 0.1 / fractal->zoom;
+	else if (keycode == 126) // Up arrow key
+		fractal->offset_y -= 0.1 / fractal->zoom;
+	draw_fractal(fractal);
+	mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
+	return (0);
+}
+
 int	handle_mouse_wheel(int button, int x, int y, t_fractal *fractal)
 {
-	if (button == 4) // Mouse wheel up
+	if (button == 4) {
 		fractal->zoom *= ZOOM_FACTOR;
-	else if (button == 5) // Mouse wheel down
+		fractal->offset_x = (x - WIDTH / 2) / (0.5 * fractal->zoom * WIDTH) \
+		+ fractal->offset_x;
+		fractal->offset_y = (y - HEIGHT / 2) / (0.5 * fractal->zoom * HEIGHT) \
+		+ fractal->offset_y;
+		draw_fractal(fractal);
+		mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
+	}
+	else if (button == 5) {
 		fractal->zoom /= ZOOM_FACTOR;
 	fractal->offset_x = (x - WIDTH / 2) / (0.5 * fractal->zoom * WIDTH) \
 		+ fractal->offset_x;
 	fractal->offset_y = (y - HEIGHT / 2) / (0.5 * fractal->zoom * HEIGHT) \
 		+ fractal->offset_y;
-	draw_fractal(fractal);
-	mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
+		draw_fractal(fractal);
+		mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
+	}
+	// draw_fractal(fractal);
+	// mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
 	return (0);
 }
 
@@ -187,9 +212,11 @@ int	main(int argc, char **argv)
 	fractal.fractal_name = argv[1];
 	draw_fractal(&fractal);
 	mlx_put_image_to_window(fractal.mlx, fractal.win, fractal.img, 0, 0);
-	mlx_hook(fractal.win, 2, 0, handle_key_press, &fractal);
 	mlx_hook(fractal.win, 17, 0, handle_window_close, &fractal);
+	// mlx_mouse_hook(fractal.win, handle_mouse_wheel, &fractal);
 	mlx_hook(fractal.win, 4, 0, handle_mouse_wheel, &fractal);
+	mlx_hook(fractal.win, 3, 0, handle_key_press, &fractal);
+	mlx_hook(fractal.win, 2, 1L << 2, handle_arrow_keys, &fractal);
 	mlx_loop(fractal.mlx);
 	return (0);
 }
@@ -207,3 +234,13 @@ int	main(int argc, char **argv)
 // 	}
 // 	return (0);
 // }
+
+// more protections for windows and images and other functions that return NULL;
+//
+//
+// what to handle in the program ? :
+// - the arrows to move around; --DONE--
+// - remove the mouse clicking and moving; --DONE--
+// - set the Julia set to change when moving the mouse;
+// - flip the burrningship upside down if possible;
+//
