@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 22:37:28 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/06/01 16:59:57 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/06/01 17:04:03 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,6 @@ int		ft_strcmp(char *s1, char *s2);
 void	draw_fractal(t_fractal *fractal);
 void	handle_errors(int argc, char **argv);
 void	proper_exit(int v);
-void	set_mlx(t_fractal fractal);
+void	set_mlx(t_fractal *fractal);
 int		offsets_and_fractals(t_fractal *fractal, int x, int y);
 #endif

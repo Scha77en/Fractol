@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 17:23:03 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/06/01 16:25:23 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/06/01 17:09:52 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	handle_mouse_movement(int x, int y, t_fractal *fractal)
 	{
 		fractal->c.r = (x - WIDTH / 2.0) / (0.5 * fractal->zoom * WIDTH);
 		fractal->c.i = (y - HEIGHT / 2.0) / (0.5 * fractal->zoom * HEIGHT);
+		mlx_clear_window(fractal->mlx, fractal->win);
 		draw_fractal(fractal);
 		mlx_put_image_to_window(fractal->mlx, fractal->win, fractal->img, 0, 0);
 	}

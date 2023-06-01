@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 22:33:53 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/06/01 17:00:49 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/06/01 17:12:30 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,33 +72,33 @@ int	offsets_and_fractals(t_fractal *fractal, int x, int y)
 	return (iter);
 }
 
-// void	set_mlx(t_fractal fractal)
-// {
-// }
+void	set_mlx(t_fractal *fractal)
+{
+	fractal->mlx = mlx_init();
+	if (fractal->mlx == NULL)
+		proper_exit(2);
+	fractal->win = mlx_new_window(fractal->mlx, WIDTH, HEIGHT, "Fractal Window");
+	if (fractal->win == NULL)
+		proper_exit(3);
+	fractal->img = mlx_new_image(fractal->mlx, WIDTH, HEIGHT);
+	if (fractal->img == NULL)
+		proper_exit(4);
+	fractal->data_addr = mlx_get_data_addr(fractal->img, &fractal->bpp, \
+										&fractal->size_line, &fractal->endian);
+	fractal->zoom = 1.0;
+	fractal->offset_x = 0.0;
+	fractal->offset_y = 0.0;
+	fractal->c.r = 0.8;
+	fractal->c.i = 0.1;
+}
 
 int	main(int argc, char **argv)
 {
 	t_fractal	fractal;
 
 	handle_errors(argc, argv);
-	fractal.mlx = mlx_init();
-	if (fractal.mlx == NULL)
-		proper_exit(2);
-	fractal.win = mlx_new_window(fractal.mlx, WIDTH, HEIGHT, "Fractal Window");
-	if (fractal.win == NULL)
-		proper_exit(3);
-	fractal.img = mlx_new_image(fractal.mlx, WIDTH, HEIGHT);
-	if (fractal.img == NULL)
-		proper_exit(4);
-	fractal.data_addr = mlx_get_data_addr(fractal.img, &fractal.bpp, \
-										&fractal.size_line, &fractal.endian);
-	fractal.zoom = 1.0;
-	fractal.offset_x = 0.0;
-	fractal.offset_y = 0.0;
-	fractal.c.r = 0.8;
-	fractal.c.i = 0.1;
+	set_mlx(&fractal);
 	fractal.fractal_name = argv[1];
-	// set_mlx(fractal);
 	draw_fractal(&fractal);
 	mlx_put_image_to_window(fractal.mlx, fractal.win, fractal.img, 0, 0);
 	mlx_hook(fractal.win, 17, 0, handle_window_close, &fractal);
