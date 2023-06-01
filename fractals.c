@@ -6,7 +6,7 @@
 /*   By: aouhbi <aouhbi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 17:21:04 by aouhbi            #+#    #+#             */
-/*   Updated: 2023/05/30 19:25:40 by aouhbi           ###   ########.fr       */
+/*   Updated: 2023/06/01 15:16:44 by aouhbi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	mandelbrot_iter(t_complex c, t_complex z)
 	return (n);
 }
 
-int	julia_iter(t_complex z, t_complex c, t_fractal fractal)
+int	julia_iter(t_complex z, t_complex c)
 {
 	int		n;
 	double	zr;
@@ -41,8 +41,8 @@ int	julia_iter(t_complex z, t_complex c, t_fractal fractal)
 	n = 0;
 	while (n < MAX_ITER)
 	{
-		zr = z.r * z.r - z.i * z.i + fractal.value;
-		zi = 2 * z.r * z.i + fractal.value;
+		zr = z.r * z.r - z.i * z.i + c.r;
+		zi = 2 * z.r * z.i + c.i;
 		z.r = zr;
 		z.i = zi;
 		if ((z.r * z.r + z.i * z.i) > 4.0)
